@@ -11,7 +11,7 @@ export const BrandingLogo = ({ ...props }: LogoProps) => {
         y="220"
         fill="currentColor"
         fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial"
-        fontSize="400"
+        fontSize="350"
         fontWeight={700}
       >
         ProcuSign
