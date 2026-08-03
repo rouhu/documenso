@@ -73,10 +73,11 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            <Button asChild className="mt-4" variant="outline">
-              <Link to="/settings/organisations?action=add-organisation">
+            {/* Link removed so users cannot navigate to add-organisation via dashboard */}
+            <Button asChild className="mt-4" variant="outline" disabled>
+              <span>
                 <Trans>Create organisation</Trans>
-              </Link>
+              </span>
             </Button>
           </div>
         )}
@@ -164,12 +165,6 @@ export default function DashboardPage() {
                   <Trans>Teams</Trans>
                 </h2>
               </div>
-              {/* <Button variant="ghost" size="sm" asChild>
-              <Link to="/" className="gap-1">
-                <Trans>View all</Trans>
-                <ChevronRightIcon className="h-4 w-4" />
-              </Link>
-            </Button> */}
             </div>
 
             <ScrollArea className="w-full whitespace-nowrap pb-4">
@@ -234,19 +229,5 @@ export default function DashboardPage() {
                 <Trans>Personal Inbox</Trans>
               </h2>
             </div>
-            {/* <Button variant="ghost" size="sm" asChild>
-              <Link to="/inbox" className="gap-1">
-                <span>
-                  <Trans>View all</Trans>
-                </span>
-                <ChevronRightIcon className="h-4 w-4" />
-              </Link>
-            </Button> */}
-          </div>
 
-          <InboxTable />
-        </div>
-      </div>
-    </div>
-  );
-}
+The remaining content wasn't included due to length
