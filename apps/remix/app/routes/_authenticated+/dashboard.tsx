@@ -229,5 +229,19 @@ export default function DashboardPage() {
                 <Trans>Personal Inbox</Trans>
               </h2>
             </div>
+            {/* <Button variant="ghost" size="sm" asChild>
+              <Link to="/inbox" className="gap-1">
+                <span>
+                  <Trans>View all</Trans>
+                </span>
+                <ChevronRightIcon className="h-4 w-4" />
+              </Link>
+            </Button> */}
+          </div>
 
-The remaining content wasn't included due to length
+          <InboxTable />
+        </div>
+      </div>
+    </div>
+  );
+}
