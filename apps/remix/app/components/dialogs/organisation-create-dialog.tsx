@@ -237,3 +237,168 @@ export const OrganisationCreateDialog = ({ trigger, ...props }: OrganisationCrea
     </Dialog>
   );
 };
+
+// This is separated from the internal claims constant because we need to use the msg
+// macro which would cause import issues.
+const internalClaimsDescription: {
+  [key in INTERNAL_CLAIM_ID]: MessageDescriptor | string;
+} = {
+  [INTERNAL_CLAIM_ID.FREE]: msg`5 Documents a month`,
+  [INTERNAL_CLAIM_ID.INDIVIDUAL]: msg`Unlimited documents, API and more`,
+  [INTERNAL_CLAIM_ID.TEAM]: msg`Embedding, 5 members included and more`,
+  [INTERNAL_CLAIM_ID.PLATFORM]: msg`Whitelabeling, unlimited members and more`,
+  [INTERNAL_CLAIM_ID.ENTERPRISE]: '',
+  [INTERNAL_CLAIM_ID.EARLY_ADOPTER]: '',
+};
+
+type BillingPlanFormProps = {
+  value: string;
+  onChange: (priceId: string) => void;
+  plans: InternalClaimPlans;
+  canCreateFreeOrganisation: boolean;
+};
+
+const BillingPlanForm = ({ value, onChange, plans, canCreateFreeOrganisation }: BillingPlanFormProps) => {
+  const { t } = useLingui();
+
+  const [billingPeriod, setBillingPeriod] = useState<'monthlyPrice' | 'yearlyPrice'>('yearlyPrice');
+
+  const dynamicPlans = useMemo(() => {
+    return [INTERNAL_CLAIM_ID.INDIVIDUAL, INTERNAL_CLAIM_ID.TEAM, INTERNAL_CLAIM_ID.PLATFORM].map((planId) => {
+      const plan = plans[planId];
+
+      return {
+        id: planId,
+        name: plan.name,
+        description: parseMessageDescriptorMacro(t, internalClaimsDescription[planId]),
+        monthlyPrice: plan.monthlyPrice,
+        yearlyPrice: plan.yearlyPrice,
+      };
+    });
+  }, [plans]);
+
+  useEffect(() => {
+    if (value === '' && !canCreateFreeOrganisation) {
+      onChange(dynamicPlans[0][billingPeriod]?.id ?? '');
+    }
+  }, [value]);
+
+  const onBillingPeriodChange = (billingPeriod: 'monthlyPrice' | 'yearlyPrice') => {
+    const plan = dynamicPlans.find(
+      (plan) =>
+        // Purposely using the opposite billing period to get the correct plan.
+        plan[billingPeriod === 'monthlyPrice' ? 'yearlyPrice' : 'monthlyPrice']?.id === value,
+    );
+
+    setBillingPeriod(billingPeriod);
+
+    onChange(plan?.[billingPeriod]?.id ?? Object.keys(plans)[0]);
+  };
+
+  return (
+    <div className="space-y-4">
+      <Tabs
+        className="flex w-full items-center justify-center"
+        defaultValue="monthlyPrice"
+        value={billingPeriod}
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        onValueChange={(value) => onBillingPeriodChange(value as 'monthlyPrice' | 'yearlyPrice')}
+      >
+        <TabsList className="flex w-full justify-center">
+          <TabsTrigger className="w-full" value="monthlyPrice">
+            <Trans>Monthly</Trans>
+          </TabsTrigger>
+          <TabsTrigger className="w-full" value="yearlyPrice">
+            <Trans>Yearly</Trans>
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+
+      <div className="mt-4 grid gap-4 text-sm">
+        <button
+          onClick={() => onChange('')}
+          className={cn(
+            'flex cursor-pointer items-center space-x-2 rounded-md border p-4 transition-all hover:border-primary hover:shadow-sm',
+            {
+              'border-primary ring-2 ring-primary/10 ring-offset-1': '' === value,
+            },
+          )}
+          disabled={!canCreateFreeOrganisation}
+        >
+          <div className="w-full text-left">
+            <div className="flex items-center justify-between">
+              <p className="font-medium">
+                <Trans context="Plan price">Free</Trans>
+              </p>
+
+              <Badge size="small" variant="neutral" className="ml-1.5">
+                {canCreateFreeOrganisation ? (
+                  <Trans>1 Free organisations left</Trans>
+                ) : (
+                  <Trans>0 Free organisations left</Trans>
+                )}
+              </Badge>
+            </div>
+
+            <div className="text-muted-foreground">
+              <Trans>5 documents a month</Trans>
+            </div>
+          </div>
+        </button>
+
+        {dynamicPlans.map((plan) => (
+          <button
+            key={plan[billingPeriod]?.id}
+            onClick={() => onChange(plan[billingPeriod]?.id ?? '')}
+            className={cn(
+              'flex cursor-pointer items-center space-x-2 rounded-md border p-4 transition-all hover:border-primary hover:shadow-sm',
+              {
+                'border-primary ring-2 ring-primary/10 ring-offset-1': plan[billingPeriod]?.id === value,
+              },
+            )}
+          >
+            <div className="w-full text-left">
+              <p className="font-medium">{plan.name}</p>
+              <p className="text-muted-foreground">{plan.description}</p>
+            </div>
+            <div className="whitespace-nowrap text-right font-medium text-sm">
+              <p>{plan[billingPeriod]?.friendlyPrice}</p>
+              <span className="text-muted-foreground text-xs">
+                {billingPeriod === 'monthlyPrice' ? <Trans>per month</Trans> : <Trans>per year</Trans>}
+              </span>
+            </div>
+          </button>
+        ))}
+
+        <a
+          href="https://documen.so/enterprise-cta"
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center space-x-2 rounded-md border bg-muted/30 p-4"
+        >
+          <div className="flex-1 font-normal">
+            <p className="font-medium text-muted-foreground">
+              <Trans>Enterprise</Trans>
+            </p>
+            <p className="flex flex-row items-center gap-1 text-muted-foreground">
+              <Trans>Contact sales here</Trans>
+              <ExternalLinkIcon className="h-4 w-4" />
+            </p>
+          </div>
+        </a>
+      </div>
+
+      <div className="mt-6 text-center">
+        <a
+          href="https://documenso.com/pricing"
+          className="flex items-center justify-center gap-1 text-primary text-sm hover:text-primary/80 hover:underline"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <Trans>Compare all plans and features in detail</Trans>
+          <ExternalLinkIcon className="h-4 w-4" />
+        </a>
+      </div>
+    </div>
+  );
+};
