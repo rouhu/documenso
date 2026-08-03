@@ -17,7 +17,7 @@ import {
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
-import { ChevronsUpDown, Plus } from 'lucide-react';
+import { ChevronsUpDown } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
@@ -58,12 +58,7 @@ export const MenuSwitcher = () => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className={cn('z-[60] ml-6 w-full min-w-[12rem] md:ml-0')} align="end" forceMount>
-        <DropdownMenuItem className="px-4 py-2 text-muted-foreground" asChild>
-          <Link to="/settings/organisations?action=add-organisation" className="flex items-center justify-between">
-            <Trans>Create Organisation</Trans>
-            <Plus className="ml-2 h-4 w-4" />
-          </Link>
-        </DropdownMenuItem>
+        {/* "+ Create Organisation" removed from this menu per request */}
         <DropdownMenuSeparator />
 
         {isUserAdmin && (
