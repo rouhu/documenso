@@ -22,7 +22,7 @@ import {
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
-import { Building2Icon, ChevronsUpDown, Plus, Settings2Icon, SettingsIcon, UsersIcon } from 'lucide-react';
+import { Building2Icon, ChevronsUpDown, Settings2Icon, SettingsIcon, UsersIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 
@@ -171,12 +171,7 @@ export const OrgMenuSwitcher = () => {
                 </div>
               ))}
 
-              <Button variant="ghost" className="w-full justify-start" asChild>
-                <Link to="/settings/organisations?action=add-organisation">
-                  <Plus className="mr-2 h-4 w-4" />
-                  <Trans>Create Organisation</Trans>
-                </Link>
-              </Button>
+              {/* "+ Create Organisation" removed from organisations column */}
             </div>
           </div>
 
@@ -232,7 +227,7 @@ export const OrgMenuSwitcher = () => {
                 {displayedOrg && (
                   <Button variant="ghost" className="w-full justify-start" asChild>
                     <Link to={`/o/${displayedOrg.url}/settings/teams?action=add-team`}>
-                      <Plus className="mr-2 h-4 w-4" />
+                      <Settings2Icon className="mr-2 h-4 w-4" />
                       <Trans>Create Team</Trans>
                     </Link>
                   </Button>
