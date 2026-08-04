@@ -6,6 +6,7 @@ import { useLocation, useSearchParams } from 'react-router';
 
 import { SettingsHeader } from '~/components/general/settings-header';
 import { AdminOrganisationsTable } from '~/components/tables/admin-organisations-table';
+import { AdminOrganisationCreateForAdminDialog } from '~/components/dialogs/admin-organisation-create-for-admin-dialog';
 
 export default function Organisations() {
   const { t } = useLingui();
@@ -39,7 +40,13 @@ export default function Organisations() {
 
   return (
     <div>
-      <SettingsHeader hideDivider title={t`Manage organisations`} subtitle={t`Search and manage all organisations`} />
+      <div className="flex items-center justify-between">
+        <SettingsHeader hideDivider title={t`Manage organisations`} subtitle={t`Search and manage all organisations`} />
+
+        <div className="ml-4">
+          <AdminOrganisationCreateForAdminDialog />
+        </div>
+      </div>
 
       <div className="mt-4">
         <Input
