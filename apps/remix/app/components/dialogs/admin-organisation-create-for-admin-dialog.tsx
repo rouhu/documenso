@@ -14,7 +14,8 @@ import { Input } from '@documenso/ui/primitives/input';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useEffect, useState } from 'react';
+import { X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import type { z } from 'zod';
@@ -23,29 +24,55 @@ const ZForm = ZCreateAdminOrganisationRequestSchema.shape.data.pick({ name: true
 
 type TForm = z.infer<typeof ZForm>;
 
+const getUserIdFromPath = (path: string) => {
+  const match = path.match(/\/admin\/users\/(\d+)$/);
+  return match ? Number(match[1]) : null;
+};
+
 export const AdminOrganisationCreateForAdminDialog = ({ trigger }: { trigger?: React.ReactNode }) => {
   const { t } = useLingui();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
+  const [ownerQuery, setOwnerQuery] = useState('');
+  const [selectedOwnerId, setSelectedOwnerId] = useState<number | null>(null);
 
   const form = useForm<TForm>({
     resolver: zodResolver(ZForm),
     defaultValues: { name: '' },
   });
 
-  const [ownerQuery, setOwnerQuery] = useState('');
-  const [selectedOwnerId, setSelectedOwnerId] = useState<number | null>(null);
-
   const { data: searchResults, isLoading: isLoadingUsers } = trpc.admin.search.useQuery(
     { query: ownerQuery },
     { enabled: ownerQuery.trim().length > 0 },
   );
 
-  const users = searchResults?.groups.find((group) => group.type === 'user')?.results ?? [];
+  const users = useMemo(
+    () => searchResults?.groups.find((group) => group.type === 'user')?.results ?? [],
+    [searchResults],
+  );
+
+  const selectedOwner = users.find((u) => getUserIdFromPath(u.path) === selectedOwnerId) ?? null;
 
   const { mutateAsync: createOrganisation, isPending: isCreating } = trpc.admin.organisation.create.useMutation();
+
+  useEffect(() => {
+    if (!open) {
+      form.reset();
+      setOwnerQuery('');
+      setSelectedOwnerId(null);
+    }
+  }, [open, form]);
+
+  useEffect(() => {
+    if (users.length === 1) {
+      const userId = getUserIdFromPath(users[0].path);
+      if (userId) {
+        setSelectedOwnerId(userId);
+      }
+    }
+  }, [users]);
 
   const onSubmit = async (values: TForm) => {
     if (!selectedOwnerId) {
@@ -75,14 +102,6 @@ export const AdminOrganisationCreateForAdminDialog = ({ trigger }: { trigger?: R
       });
     }
   };
-
-  useEffect(() => {
-    if (!open) {
-      form.reset();
-      setOwnerQuery('');
-      setSelectedOwnerId(null);
-    }
-  }, [open, form]);
 
   return (
     <Dialog open={open} onOpenChange={(v) => setOpen(v)}>
@@ -130,26 +149,60 @@ export const AdminOrganisationCreateForAdminDialog = ({ trigger }: { trigger?: R
                 <Input
                   placeholder={t`Search users by name or email`}
                   value={ownerQuery}
-                  onChange={(e) => setOwnerQuery(e.target.value)}
+                  onChange={(e) => {
+                    setOwnerQuery(e.target.value);
+                    setSelectedOwnerId(null);
+                  }}
                 />
+
+                {selectedOwner && (
+                  <div className="mt-2 flex items-start justify-between rounded-md border bg-muted/40 p-3">
+                    <div className="min-w-0">
+                      <div className="font-medium">
+                        <Trans>Selected owner</Trans>
+                      </div>
+                      <div className="truncate text-sm">{selectedOwner.label}</div>
+                      {selectedOwner.sublabel && (
+                        <div className="truncate text-xs text-muted-foreground">{selectedOwner.sublabel}</div>
+                      )}
+                    </div>
+
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="ml-2 h-8 w-8 shrink-0"
+                      onClick={() => {
+                        setSelectedOwnerId(null);
+                        setOwnerQuery('');
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
 
                 <div className="mt-2 max-h-40 overflow-auto rounded-md border">
                   {isLoadingUsers ? (
                     <div className="p-2 text-sm text-muted-foreground">{t`Loading users...`}</div>
                   ) : users.length > 0 ? (
-                    users.map((u) => (
-                      <div
-                        key={u.value}
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => setSelectedOwnerId(Number(u.value))}
-                        onKeyDown={() => setSelectedOwnerId(Number(u.value))}
-                        className={`p-2 cursor-pointer ${selectedOwnerId === Number(u.value) ? 'bg-accent' : ''}`}
-                      >
-                        <div className="font-medium">{u.label}</div>
-                        <div className="text-xs text-muted-foreground">{u.sublabel}</div>
-                      </div>
-                    ))
+                    users.map((u) => {
+                      const userId = getUserIdFromPath(u.path);
+
+                      return (
+                        <div
+                          key={u.path}
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => userId && setSelectedOwnerId(userId)}
+                          onKeyDown={() => userId && setSelectedOwnerId(userId)}
+                          className={`p-2 cursor-pointer ${selectedOwnerId === userId ? 'bg-accent' : ''}`}
+                        >
+                          <div className="font-medium">{u.label}</div>
+                          <div className="text-xs text-muted-foreground">{u.sublabel}</div>
+                        </div>
+                      );
+                    })
                   ) : (
                     <div className="p-2 text-sm text-muted-foreground">{t`No users found`}</div>
                   )}
