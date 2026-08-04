@@ -170,7 +170,7 @@ export const AdminOrganisationCreateForAdminDialog = ({ trigger }: { trigger?: R
                     <Button
                       type="button"
                       variant="ghost"
-                      size="icon"
+                      size="sm"
                       className="ml-2 h-8 w-8 shrink-0"
                       onClick={() => {
                         setSelectedOwnerId(null);
