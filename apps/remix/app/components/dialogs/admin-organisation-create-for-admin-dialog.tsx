@@ -45,7 +45,7 @@ export const AdminOrganisationCreateForAdminDialog = ({ trigger }: { trigger?: R
 
   const users = searchResults?.users ?? [];
 
-  const { mutateAsync: createOrganisation, isLoading: isCreating } = trpc.admin.organisation.create.useMutation();
+  const { mutateAsync: createOrganisation, isPending: isCreating } = trpc.admin.organisation.create.useMutation();
 
   const onSubmit = async (values: TForm) => {
     if (!selectedOwnerId) {
