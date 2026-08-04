@@ -1,4 +1,3 @@
-import { useDebouncedValue } from '@documenso/lib/client-only/hooks/use-debounced-value';
 import { trpc } from '@documenso/trpc/react';
 import { ZCreateAdminOrganisationRequestSchema } from '@documenso/trpc/server/admin-router/create-admin-organisation.types';
 import { Button } from '@documenso/ui/primitives/button';
@@ -36,33 +35,44 @@ export const AdminOrganisationCreateForAdminDialog = ({ trigger }: { trigger?: R
     defaultValues: { name: '' },
   });
 
-  // Owner search
   const [ownerQuery, setOwnerQuery] = useState('');
-  const debouncedOwnerQuery = useDebouncedValue(ownerQuery, 400);
   const [selectedOwnerId, setSelectedOwnerId] = useState<number | null>(null);
 
-  const { data: usersData, isLoading: isLoadingUsers } = trpc.admin.user.find.useQuery(
-    { query: debouncedOwnerQuery, page: 1, perPage: 10 },
-    { enabled: debouncedOwnerQuery.length > 0 },
+  const { data: searchResults, isLoading: isLoadingUsers } = trpc.admin.search.useQuery(
+    { query: ownerQuery },
+    { enabled: ownerQuery.trim().length > 0 },
   );
+
+  const users = searchResults?.users ?? [];
 
   const { mutateAsync: createOrganisation, isLoading: isCreating } = trpc.admin.organisation.create.useMutation();
 
   const onSubmit = async (values: TForm) => {
     if (!selectedOwnerId) {
-      toast({ title: t`Owner required`, description: t`Please select an owner for the organisation`, variant: 'destructive' });
+      toast({
+        title: t`Owner required`,
+        description: t`Please select an owner for the organisation`,
+        variant: 'destructive',
+      });
       return;
     }
 
     try {
-      const { organisationId } = await createOrganisation({ ownerUserId: selectedOwnerId, data: { name: values.name } });
+      const { organisationId } = await createOrganisation({
+        ownerUserId: selectedOwnerId,
+        data: { name: values.name },
+      });
 
       toast({ title: t`Success`, description: t`Organisation created`, duration: 5000 });
       setOpen(false);
       navigate(`/admin/organisations/${organisationId}`);
     } catch (err) {
       console.error(err);
-      toast({ title: t`An unknown error occurred`, description: t`Please try again later.`, variant: 'destructive' });
+      toast({
+        title: t`An unknown error occurred`,
+        description: t`Please try again later.`,
+        variant: 'destructive',
+      });
     }
   };
 
@@ -72,11 +82,17 @@ export const AdminOrganisationCreateForAdminDialog = ({ trigger }: { trigger?: R
       setOwnerQuery('');
       setSelectedOwnerId(null);
     }
-  }, [open]);
+  }, [open, form]);
 
   return (
     <Dialog open={open} onOpenChange={(v) => setOpen(v)}>
-      <DialogTrigger asChild>{trigger ?? <Button variant="secondary"><Trans>Create Organisation</Trans></Button>}</DialogTrigger>
+      <DialogTrigger asChild>
+        {trigger ?? (
+          <Button variant="secondary">
+            <Trans>Create Organisation</Trans>
+          </Button>
+        )}
+      </DialogTrigger>
 
       <DialogContent position="center">
         <DialogHeader>
@@ -120,8 +136,8 @@ export const AdminOrganisationCreateForAdminDialog = ({ trigger }: { trigger?: R
                 <div className="mt-2 max-h-40 overflow-auto rounded-md border">
                   {isLoadingUsers ? (
                     <div className="p-2 text-sm text-muted-foreground">{t`Loading users...`}</div>
-                  ) : usersData && usersData.data && usersData.data.length > 0 ? (
-                    usersData.data.map((u: any) => (
+                  ) : users.length > 0 ? (
+                    users.map((u: any) => (
                       <div
                         key={u.id}
                         role="button"
