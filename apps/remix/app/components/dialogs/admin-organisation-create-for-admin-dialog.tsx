@@ -43,7 +43,7 @@ export const AdminOrganisationCreateForAdminDialog = ({ trigger }: { trigger?: R
     { enabled: ownerQuery.trim().length > 0 },
   );
 
-  const users = searchResults?.users ?? [];
+  const users = searchResults?.groups.find((group) => group.type === 'user')?.results ?? [];
 
   const { mutateAsync: createOrganisation, isPending: isCreating } = trpc.admin.organisation.create.useMutation();
 
@@ -137,17 +137,17 @@ export const AdminOrganisationCreateForAdminDialog = ({ trigger }: { trigger?: R
                   {isLoadingUsers ? (
                     <div className="p-2 text-sm text-muted-foreground">{t`Loading users...`}</div>
                   ) : users.length > 0 ? (
-                    users.map((u: any) => (
+                    users.map((u) => (
                       <div
-                        key={u.id}
+                        key={u.value}
                         role="button"
                         tabIndex={0}
-                        onClick={() => setSelectedOwnerId(u.id)}
-                        onKeyDown={() => setSelectedOwnerId(u.id)}
-                        className={`p-2 cursor-pointer ${selectedOwnerId === u.id ? 'bg-accent' : ''}`}
+                        onClick={() => setSelectedOwnerId(Number(u.value))}
+                        onKeyDown={() => setSelectedOwnerId(Number(u.value))}
+                        className={`p-2 cursor-pointer ${selectedOwnerId === Number(u.value) ? 'bg-accent' : ''}`}
                       >
-                        <div className="font-medium">{u.name ?? u.email}</div>
-                        <div className="text-xs text-muted-foreground">{u.email}</div>
+                        <div className="font-medium">{u.label}</div>
+                        <div className="text-xs text-muted-foreground">{u.sublabel}</div>
                       </div>
                     ))
                   ) : (
