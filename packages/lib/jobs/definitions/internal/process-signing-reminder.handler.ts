@@ -1,4 +1,4 @@
-import DocumentReminderEmailTemplate from '@documenso/email/templates/document-reminder';
+import { DocumentReminderEmailTemplate } from '@documenso/email/templates/document-reminder';
 import { prisma } from '@documenso/prisma';
 import { msg } from '@lingui/core/macro';
 import {

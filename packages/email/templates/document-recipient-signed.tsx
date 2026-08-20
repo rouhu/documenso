@@ -36,7 +36,12 @@ export const DocumentRecipientSignedEmailTemplate = ({
             <Section className="p-2">
               <TemplateBrandingLogo assetBaseUrl={assetBaseUrl} className="mb-4 h-6" />
 
-              <TemplateDocumentRecipientSigned recipientName={recipientName} documentName={documentName} />
+              <TemplateDocumentRecipientSigned
+                recipientName={recipientName}
+                recipientEmail={recipientEmail}
+                documentName={documentName}
+                assetBaseUrl={assetBaseUrl}
+              />
             </Section>
           </Container>
 
