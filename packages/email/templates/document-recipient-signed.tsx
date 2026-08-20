@@ -16,7 +16,7 @@ export interface DocumentRecipientSignedEmailTemplateProps {
 export const DocumentRecipientSignedEmailTemplate = ({
   documentName = 'Open Source Pledge.pdf',
   recipientName = 'John Doe',
-  recipientEmail = 'lucas@documenso.com',
+  recipientEmail = 'lucas@procusign.com',
   assetBaseUrl = 'http://localhost:3002',
 }: DocumentRecipientSignedEmailTemplateProps) => {
   const { _ } = useLingui();
@@ -36,16 +36,11 @@ export const DocumentRecipientSignedEmailTemplate = ({
             <Section className="p-2">
               <TemplateBrandingLogo assetBaseUrl={assetBaseUrl} className="mb-4 h-6" />
 
-              <TemplateDocumentRecipientSigned
-                documentName={documentName}
-                recipientName={recipientName}
-                recipientEmail={recipientEmail}
-                assetBaseUrl={assetBaseUrl}
-              />
+              <TemplateDocumentRecipientSigned recipientName={recipientName} documentName={documentName} />
             </Section>
           </Container>
 
-          <Container className="mx-auto max-w-xl">
+          <Container className="mx-auto mt-12 max-w-xl">
             <TemplateFooter />
           </Container>
         </Section>
@@ -53,5 +48,3 @@ export const DocumentRecipientSignedEmailTemplate = ({
     </Html>
   );
 };
-
-export default DocumentRecipientSignedEmailTemplate;

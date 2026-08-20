@@ -1,10 +1,10 @@
 import { RECIPIENT_ROLES_DESCRIPTION } from '@documenso/lib/constants/recipient-roles';
+import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
 import { RecipientRole } from '@prisma/client';
-import { match } from 'ts-pattern';
 
-import { Button, Section, Text } from '../components';
+import { Body, Button, Section, Text } from '../components';
 import { TemplateDocumentImage } from './template-document-image';
 
 export interface TemplateDocumentReminderProps {
@@ -43,32 +43,15 @@ export const TemplateDocumentReminder = ({
         </Text>
 
         <Text className="my-1 text-center text-base text-muted-foreground">
-          {match(role)
-            .with(RecipientRole.SIGNER, () => <Trans>Continue by signing the document.</Trans>)
-            .with(RecipientRole.VIEWER, () => <Trans>Continue by viewing the document.</Trans>)
-            .with(RecipientRole.APPROVER, () => <Trans>Continue by approving the document.</Trans>)
-            .with(RecipientRole.CC, () => '')
-            .with(RecipientRole.ASSISTANT, () => <Trans>Continue by assisting with the document.</Trans>)
-            .exhaustive()}
+          <Trans>Continue by signing the document.</Trans>
         </Text>
 
         <Section className="mt-8 mb-6 text-center">
-          <Button
-            className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-center font-medium text-primary-foreground text-sm no-underline"
-            href={signDocumentLink}
-          >
-            {match(role)
-              .with(RecipientRole.SIGNER, () => <Trans>Sign Document</Trans>)
-              .with(RecipientRole.VIEWER, () => <Trans>View Document</Trans>)
-              .with(RecipientRole.APPROVER, () => <Trans>Approve Document</Trans>)
-              .with(RecipientRole.CC, () => '')
-              .with(RecipientRole.ASSISTANT, () => <Trans>Assist Document</Trans>)
-              .exhaustive()}
+          <Button href={signDocumentLink} className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-center font-medium text-primary-foreground text-sm no-underline">
+            <Trans>Sign document</Trans>
           </Button>
         </Section>
       </Section>
     </>
   );
 };
-
-export default TemplateDocumentReminder;
