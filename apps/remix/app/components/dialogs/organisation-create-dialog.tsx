@@ -370,12 +370,12 @@ const BillingPlanForm = ({ value, onChange, plans, canCreateFreeOrganisation }: 
           </button>
         ))}
 
-<a
-  href={DOCUMENSO_CLOUD_ENTERPRISE_CTA_URL}
-  target="_blank"
-  rel="noreferrer"
-  className="flex items-center space-x-2 rounded-md border bg-muted/30 p-4"
->
+        <a
+          href={DOCUMENSO_CLOUD_ENTERPRISE_CTA_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center space-x-2 rounded-md border bg-muted/30 p-4"
+        >
           <div className="flex-1 font-normal">
             <p className="font-medium text-muted-foreground">
               <Trans>Enterprise</Trans>
