@@ -1,6 +1,6 @@
 import type { InternalClaimPlans } from '@documenso/ee/server-only/stripe/get-internal-claim-plans';
 import { useSession } from '@documenso/lib/client-only/providers/session';
-import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
+import { DOCUMENSO_CLOUD_ENTERPRISE_CTA_URL, IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import { AppError } from '@documenso/lib/errors/app-error';
 import { INTERNAL_CLAIM_ID } from '@documenso/lib/types/subscription';
 import { parseMessageDescriptorMacro } from '@documenso/lib/utils/i18n';
@@ -370,12 +370,12 @@ const BillingPlanForm = ({ value, onChange, plans, canCreateFreeOrganisation }: 
           </button>
         ))}
 
-        <a
-          href="https://documen.so/enterprise-cta"
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center space-x-2 rounded-md border bg-muted/30 p-4"
-        >
+<a
+  href={DOCUMENSO_CLOUD_ENTERPRISE_CTA_URL}
+  target="_blank"
+  rel="noreferrer"
+  className="flex items-center space-x-2 rounded-md border bg-muted/30 p-4"
+>
           <div className="flex-1 font-normal">
             <p className="font-medium text-muted-foreground">
               <Trans>Enterprise</Trans>
