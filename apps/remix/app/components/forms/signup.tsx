@@ -383,7 +383,7 @@ export const SignUpForm = ({
           <Trans>
             By proceeding, you agree to our{' '}
             <Link
-              to="https://documen.so/terms"
+              to="https://procusign.com/terms.html"
               target="_blank"
               className="text-documenso-700 duration-200 hover:opacity-70"
             >
@@ -391,7 +391,7 @@ export const SignUpForm = ({
             </Link>{' '}
             and{' '}
             <Link
-              to="https://documen.so/privacy"
+              to="https://procusign.com/privacy.html"
               target="_blank"
               className="text-documenso-700 duration-200 hover:opacity-70"
             >

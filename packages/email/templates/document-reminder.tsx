@@ -22,7 +22,7 @@ export type DocumentReminderEmailTemplateProps = {
 export const DocumentReminderEmailTemplate = ({
   recipientName = 'John Doe',
   documentName = 'Open Source Pledge.pdf',
-  signDocumentLink = 'https://documenso.com',
+  signDocumentLink = 'https://procusign.com',
   assetBaseUrl = 'http://localhost:3002',
   customBody,
   role = RecipientRole.SIGNER,
@@ -56,25 +56,13 @@ export const DocumentReminderEmailTemplate = ({
             </Section>
           </Container>
 
-          {customBody && (
-            <Container className="mx-auto mt-12 max-w-xl">
-              <Section>
-                <Text className="mt-2 text-base text-muted-foreground">
-                  <TemplateCustomMessageBody text={customBody} />
-                </Text>
-              </Section>
-            </Container>
-          )}
-
           <Hr className="mx-auto mt-12 max-w-xl" />
 
           <Container className="mx-auto max-w-xl">
-            <TemplateFooter reportUrl={reportUrl} />
+            <TemplateFooter />
           </Container>
         </Section>
       </Body>
     </Html>
   );
 };
-
-export default DocumentReminderEmailTemplate;

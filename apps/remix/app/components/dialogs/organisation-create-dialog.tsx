@@ -1,5 +1,4 @@
 import type { InternalClaimPlans } from '@documenso/ee/server-only/stripe/get-internal-claim-plans';
-import { useUpdateSearchParams } from '@documenso/lib/client-only/hooks/use-update-search-params';
 import { useSession } from '@documenso/lib/client-only/providers/session';
 import { DOCUMENSO_CLOUD_ENTERPRISE_CTA_URL, IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import { AppError } from '@documenso/lib/errors/app-error';
@@ -33,7 +32,6 @@ import type * as DialogPrimitive from '@radix-ui/react-dialog';
 import { ExternalLinkIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useSearchParams } from 'react-router';
 import { match } from 'ts-pattern';
 import type { z } from 'zod';
 
@@ -54,11 +52,7 @@ export const OrganisationCreateDialog = ({ trigger, ...props }: OrganisationCrea
   const { toast } = useToast();
   const { refreshSession, organisations } = useSession();
 
-  const [searchParams] = useSearchParams();
-  const updateSearchParams = useUpdateSearchParams();
   const isPersonalLayoutMode = isPersonalLayout(organisations);
-
-  const actionSearchParam = searchParams?.get('action');
 
   const [step, setStep] = useState<'billing' | 'create'>(IS_BILLING_ENABLED() ? 'billing' : 'create');
 
@@ -114,12 +108,9 @@ export const OrganisationCreateDialog = ({ trigger, ...props }: OrganisationCrea
     }
   };
 
-  useEffect(() => {
-    if (actionSearchParam === 'add-organisation') {
-      setOpen(true);
-      updateSearchParams({ action: null });
-    }
-  }, [actionSearchParam, open]);
+  // NOTE: We intentionally do not open the dialog from a URL search param anymore.
+  // The prior behavior opened the dialog when action=add-organisation was present.
+  // Removing that behavior disables direct access via the query string.
 
   useEffect(() => {
     form.reset();
@@ -379,9 +370,10 @@ const BillingPlanForm = ({ value, onChange, plans, canCreateFreeOrganisation }: 
           </button>
         ))}
 
-        <Link
-          to={DOCUMENSO_CLOUD_ENTERPRISE_CTA_URL}
+        <a
+          href={DOCUMENSO_CLOUD_ENTERPRISE_CTA_URL}
           target="_blank"
+          rel="noreferrer"
           className="flex items-center space-x-2 rounded-md border bg-muted/30 p-4"
         >
           <div className="flex-1 font-normal">
@@ -393,18 +385,19 @@ const BillingPlanForm = ({ value, onChange, plans, canCreateFreeOrganisation }: 
               <ExternalLinkIcon className="h-4 w-4" />
             </p>
           </div>
-        </Link>
+        </a>
       </div>
 
       <div className="mt-6 text-center">
-        <Link
-          to="https://documenso.com/pricing"
+        <a
+          href="https://documenso.com/pricing"
           className="flex items-center justify-center gap-1 text-primary text-sm hover:text-primary/80 hover:underline"
           target="_blank"
+          rel="noreferrer"
         >
           <Trans>Compare all plans and features in detail</Trans>
           <ExternalLinkIcon className="h-4 w-4" />
-        </Link>
+        </a>
       </div>
     </div>
   );

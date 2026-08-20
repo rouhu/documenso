@@ -46,27 +46,14 @@ export const DocumentCreatedFromDirectTemplateEmailTemplate = ({
               <Section>
                 <Text className="mb-0 text-center font-semibold text-foreground text-lg">
                   <Trans>
-                    {recipientName} {action} a document by using one of your direct links
+                    A document was created from a direct template and requires you to {action} it.
                   </Trans>
                 </Text>
-
-                <div className="mx-auto my-2 w-fit rounded-lg bg-muted px-4 py-2 text-muted-foreground text-sm">
-                  {documentName}
-                </div>
-
-                <Section className="my-6 text-center">
-                  <Button
-                    className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-center font-medium text-primary-foreground text-sm no-underline"
-                    href={documentLink}
-                  >
-                    <Trans>View document</Trans>
-                  </Button>
-                </Section>
               </Section>
             </Section>
           </Container>
 
-          <Container className="mx-auto max-w-xl">
+          <Container className="mx-auto mt-12 max-w-xl">
             <TemplateFooter />
           </Container>
         </Section>
@@ -74,5 +61,3 @@ export const DocumentCreatedFromDirectTemplateEmailTemplate = ({
     </Html>
   );
 };
-
-export default DocumentCreatedFromDirectTemplateEmailTemplate;

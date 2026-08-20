@@ -32,7 +32,7 @@ export const DocumentSelfSignedEmailTemplate = ({
             </Section>
           </Container>
 
-          <Container className="mx-auto max-w-xl">
+          <Container className="mx-auto mt-12 max-w-xl">
             <TemplateFooter />
           </Container>
         </Section>
@@ -40,5 +40,3 @@ export const DocumentSelfSignedEmailTemplate = ({
     </Html>
   );
 };
-
-export default DocumentSelfSignedEmailTemplate;
